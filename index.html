@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OuderHulp AI</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#edf7f4,#eef2fb);color:#263438}.app{max-width:780px;margin:auto;padding:16px}.hero,.card{background:#fff;border-radius:22px;padding:20px;margin-top:15px;box-shadow:0 5px 20px #0001}.hero{background:linear-gradient(135deg,#27786d,#46978c);color:#fff}.hero h1{font-size:30px;margin:8px 0}.hero p{line-height:1.5}textarea{width:100%;min-height:150px;border:1px solid #d5dfdd;border-radius:14px;padding:14px;font-size:16px;box-sizing:border-box}button{border:0;border-radius:14px;padding:14px;font-weight:bold;font-size:15px;cursor:pointer}.primary{width:100%;background:#27786d;color:#fff;margin-top:10px}.secondary{background:#eef5f3;color:#28665e;margin:4px}.hidden{display:none}.status{font-size:13px;color:#58706d;margin-top:9px}.answer{line-height:1.65}.answer h2,.answer h3{color:#286b62}.tag{display:inline-block;background:#dcefe9;color:#286b62;border-radius:20px;padding:5px 9px;margin:3px}.source{padding:10px 0;border-bottom:1px solid #e3ece9}.source a{color:#246c63;font-weight:bold}
+</style></head><body><div class="app">
+<section class="hero"><small>OuderHulp AI</small><h1>Jouw verhaal. Eerst begrijpen, dan adviseren.</h1><p>Vertel wat er speelt. Eerst kijken we samen of je vraag goed begrepen is.</p></section>
+<section class="card"><b>Vertel wat er speelt</b><textarea id="q" placeholder="Schrijf je verhaal zoals je het aan een oudercoach zou vertellen..."></textarea>
+<div><button class="secondary" onclick="fill('Mijn dochter van 14 trekt zich steeds meer terug en zit veel op haar kamer.')">Voorbeeld 1</button><button class="secondary" onclick="fill('Mijn zoon heeft veel ruzie met vrienden en is thuis vaak boos.')">Voorbeeld 2</button><button class="secondary" onclick="fill('Mijn kind wil steeds langer gamen en wordt boos bij stoppen.')">Voorbeeld 3</button></div>
+<button id="go" class="primary" onclick="start()">🧠 Eerst mijn vraag begrijpen</button><div id="status" class="status"></div></section>
+<section id="analysis" class="card hidden"><h3>Wat ik uit je verhaal haal</h3><div id="analysisText"></div><button class="primary" onclick="answer()">Ja, dit is wat ik bedoel</button><button class="secondary" onclick="edit()">Nee, ik bedoel iets anders</button></section>
+<section id="result" class="card answer hidden"></section>
+<section id="follow" class="card hidden"><h3>Een gerichte vervolgvraag</h3><p id="followText"></p><textarea id="followInput" placeholder="Vertel wat er speelt..."></textarea><button class="primary" onclick="follow()">Verder</button></section>
+<section id="sources" class="card hidden"><h3>📚 Bronnen</h3><div id="sourceList"></div></section>
+<section class="card"><small>OuderHulp geeft algemene informatie en vervangt geen professionele beoordeling. Bij direct gevaar: bel 112. Deel liever geen onnodige persoonsgegevens.</small></section>
+</div>
+<script>
+const S={story:'',analysis:null,conversation:[],rounds:0};
+const $=id=>document.getElementById(id);
+function fill(x){$('q').value=x}
+function status(x){$('status').textContent=x}
+function esc(x){return String(x||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+async function call(data){const r=await fetch('/api/parent-help',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const d=await r.json();if(!r.ok)throw Error(d.error||'Er ging iets mis.');return d}
+async function start(){S.story=$('q').value.trim();if(!S.story)return;$('go').disabled=true;status('Ik probeer eerst je echte vraag te begrijpen…');S.conversation=[{role:'user',content:S.story}];try{const d=await call({action:'analyze',story:S.story});S.analysis=d.analysis;$('analysisText').innerHTML='<p><b>Mijn voorlopige begrip:</b> '+esc(d.analysis.core_question)+'</p><p><b>Waar je hulp bij zoekt:</b> '+esc(d.analysis.parent_goal)+'</p>'+(d.analysis.age?'<span class="tag">leeftijd: '+esc(d.analysis.age)+'</span>':'')+((d.analysis.unknowns||[]).length?'<p><small>Nog niet duidelijk: '+d.analysis.unknowns.map(esc).join(', ')+'</small></p>':'');$('analysis').classList.remove('hidden');status('Controleer even of ik je goed begrijp.')}catch(e){status(e.message)}finally{$('go').disabled=false}}
+async function answer(){ $('analysis').classList.add('hidden');status('Nu maak ik het eerste advies…');try{show(await call({action:'answer',story:S.story,analysis:S.analysis,conversation:S.conversation}))}catch(e){status(e.message)}}
+function edit(){$('analysis').classList.add('hidden');$('q').focus();status('Pas je verhaal gerust aan.')}
+function show(d){$('result').innerHTML='<h2>Mijn advies</h2>'+(d.answer_html||'');$('result').classList.remove('hidden');if(d.followup){$('followText').textContent=d.followup;$('follow').classList.remove('hidden')}else $('follow').classList.add('hidden');$('sourceList').innerHTML=(d.sources||[]).map(s=>'<div class="source"><a target="_blank" rel="noopener" href="'+s.url+'">'+esc(s.title)+'</a><br><small>'+esc(s.reason)+'</small></div>').join('');$('sources').classList.toggle('hidden',!(d.sources||[]).length);status('Het advies is gebaseerd op jouw verhaal.')}
+async function follow(){const x=$('followInput').value.trim();if(!x)return;S.conversation.push({role:'user',content:x});S.rounds++;$('follow').classList.add('hidden');status('Ik verwerk je antwoord…');try{const d=await call({action:'answer',story:S.story,analysis:S.analysis,conversation:S.conversation});if(S.rounds>=2)d.followup=null;show(d)}catch(e){status(e.message)}}
+</script></body></html>
