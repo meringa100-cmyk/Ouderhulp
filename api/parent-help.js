@@ -88,7 +88,7 @@ function parseJson(value) {
   throw new Error('Ongeldige AI-uitvoer: ' + text.substring(0, 160));
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     return send(res, 405, { error: 'Gebruik POST.' });
   }
@@ -164,3 +164,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+
+module.exports = handler;
