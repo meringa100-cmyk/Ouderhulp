@@ -4,47 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1976d2">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg">
+<link rel="manifest" href="manifest.json?v=2">
+<link rel="icon" href="icon.svg?v=2">
 <title>Dorenbos Weekoverzicht</title>
 <style>
-*{box-sizing:border-box}body{margin:0;padding:14px;background:#f3f6f8;color:#1f2937;font-family:Arial,sans-serif}
-.app{max-width:920px;margin:auto}.header{height:210px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#1769aa,#42a5f5);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px #0002;margin-bottom:14px}
-.header svg{width:100%;height:100%}.title{background:#fff;border-radius:16px;padding:15px;box-shadow:0 3px 12px #0001}.title h1{margin:0 0 4px;font-size:25px}.title p{margin:0;color:#667085}
-.card{margin-top:14px;background:#fff;border-radius:16px;padding:12px;box-shadow:0 3px 14px #0001;overflow:auto}
-table{width:100%;border-collapse:separate;border-spacing:5px;min-width:650px}th{padding:8px;font-size:14px}th:first-child{text-align:left;width:180px}
-.name{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px;font-weight:bold;background:#fff}
-.name.c1{color:#e11d48}.name.c2{color:#2563eb}.name.c3{color:#16a34a}.name.c4{color:#9333ea}.name.c5{color:#ea580c}.name.c6{color:#0891b2}.name.c7{color:#db2777}.name.c8{color:#ca8a04}
-.cell{height:54px;border-radius:12px;background:#eef1f4;border:2px solid transparent;cursor:pointer}.cell.green{background:#45c76b}.cell.orange{background:#f5a623}.cell.red{background:#e5484d}.cell:after{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#fff;opacity:.85;margin:auto;transform:translateY(16px)}
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin:14px 2px 2px;font-size:14px}.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:5px}.g{background:#45c76b}.o{background:#f5a623}.r{background:#e5484d}
-button{border:0;border-radius:10px;padding:11px 15px;font-size:15px;cursor:pointer;background:#344054;color:#fff;margin-top:12px}.hint{font-size:13px;color:#667085;margin-top:9px}
-@media(max-width:600px){.header{height:165px}.title h1{font-size:22px}}
-</style>
-</head>
-<body><div class="app">
-<div class="header">
-<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dorenbos Taxi cartoon">
-<rect width="900" height="300" fill="#8ed0ff"/><circle cx="100" cy="70" r="45" fill="#fff" opacity=".85"/><circle cx="145" cy="70" r="60" fill="#fff" opacity=".85"/>
-<path d="M0 220 Q220 175 430 220 T900 205 V300H0Z" fill="#65b96b"/>
-<path d="M0 250 Q250 210 500 250 T900 235" fill="none" stroke="#777" stroke-width="45"/>
-<g transform="translate(235 105)">
-<rect x="0" y="35" rx="28" width="430" height="105" fill="#f7f9fb" stroke="#155b91" stroke-width="7"/>
-<path d="M65 35 L110 -5 H315 L365 35Z" fill="#dcefff" stroke="#155b91" stroke-width="7"/>
-<path d="M125 5 H205 V34 H90Z M215 5 H305 L342 34 H215Z" fill="#7fc5ef" stroke="#155b91" stroke-width="5"/>
-<circle cx="100" cy="143" r="32" fill="#263238"/><circle cx="335" cy="143" r="32" fill="#263238"/><circle cx="100" cy="143" r="14" fill="#dce3e8"/><circle cx="335" cy="143" r="14" fill="#dce3e8"/>
-<rect x="145" y="70" width="140" height="42" rx="10" fill="#1976d2"/><text x="215" y="99" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="25" fill="white">DORENBOS</text>
-</g><text x="450" y="45" text-anchor="middle" font-family="Arial" font-size="26" font-weight="bold" fill="#174c70">TAXI</text>
-</svg></div>
-<div class="title"><h1>Dorenbos Weekoverzicht</h1><p>Beoordeling per kind · maandag t/m vrijdag</p></div>
-<div class="card"><table><thead><tr><th>Kind</th><th>Ma</th><th>Di</th><th>Wo</th><th>Do</th><th>Vr</th></tr></thead><tbody id="rows"></tbody></table>
-<div class="legend"><span><i class="dot g"></i>Goed</span><span><i class="dot o"></i>Bijna goed</span><span><i class="dot r"></i>Niet goed</span><span>⚪ Nog niet ingevuld</span></div>
-<button onclick="clearWeek()">Week wissen</button><div class="hint">Alleen de kleuren worden gewist. De namen blijven staan.</div></div>
-</div>
-<script>
-const days=["ma","di","wo","do","vr"], names=["Abir","Thijs","Jill","Shay","Taha","Jayden","Miracle","Harley"], key="dorenbos_week_v1";
-let data={};try{data=JSON.parse(localStorage.getItem(key))||{}}catch(e){}
-function save(){localStorage.setItem(key,JSON.stringify(data))}
-function render(){const tb=document.getElementById("rows");tb.innerHTML="";names.forEach((name,i)=>{const tr=document.createElement("tr"),nt=document.createElement("td"),input=document.createElement("input");input.className="name c"+(i+1);input.value=name;input.readOnly=true;nt.appendChild(input);tr.appendChild(nt);days.forEach(day=>{const td=document.createElement("td"),cell=document.createElement("div");cell.className="cell "+(data[i+"_"+day]||"");cell.onclick=()=>{const c=data[i+"_"+day]||"";data[i+"_"+day]=c===""?"green":c==="green"?"orange":c==="orange"?"red":"";save();cell.className="cell "+data[i+"_"+day]};td.appendChild(cell);tr.appendChild(td)});tb.appendChild(tr)})}
-function clearWeek(){if(confirm("Alle kleuren van deze week wissen? De namen blijven staan.")){for(let i=0;i<8;i++)days.forEach(d=>delete data[i+"_"+d]);save();render()}}
-render();if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
-</script></body></html>
+*{box-sizing:border-box}body{margin:0;padding:14px;background:#f3f6f8;color:#1f2937;font-family:Arial,sans-serif}.app{max-width:920px;margin:auto}.header{height:210px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#1769aa,#42a5f5);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px #0002;margin-bottom:14px}.header svg{width:100%;height:100%}.title{background:#fff;border-radius:16px;padding:15px;box-shadow:0 3px 12px #0001}.title h1{margin:0 0 4px;font-size:25px}.title p{margin:0;color:#667085}.card{margin-top:14px;background:#fff;border-radius:16px;padding:12px;box-shadow:0 3px 14px #0001;overflow:auto}table{width:100%;border-collapse:separate;border-spacing:5px;min-width:650px}th{padding:8px;font-size:14px}th:first-child{text-align:left;width:180px}.name{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px;font-weight:bold;background:#fff}.name.c1{color:#e11d48}.name.c2{color:#2563eb}.name.c3{color:#16a34a}.name.c4{color:#9333ea}.name.c5{color:#ea580c}.name.c6{color:#0891b2}.name.c7{color:#db2777}.name.c8{color:#ca8a04}.cell{height:54px;border-radius:12px;background:#eef1f4;border:2px solid transparent;cursor:pointer}.cell.green{background:#45c76b}.cell.orange{background:#f5a623}.cell.red{background:#e5484d}.cell:after{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#fff;opacity:.85;margin:auto;transform:translateY(16px)}.legend{display:flex;gap:18px;flex-wrap:wrap;margin:14px 2px 2px;font-size:14px}.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:5px}.g{background:#45c76b}.o{background:#f5a623}.r{background:#e5484d}button{border:0;border-radius:10px;padding:11px 15px;font-size:15px;cursor:pointer;background:#344054;color:#fff;margin-top:12px}.hint{font-size:13px;color:#667085;margin-top:9px}@media(max-width:600px){.header{height:165px}.title h1{font-size:22px}}
+</style></head>
+<body><div class="app"><div class="header"><svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dorenbos Taxi bus"><rect width="900" height="300" fill="#8ed0ff"/><circle cx="100" cy="70" r="45" fill="#fff" opacity=".85"/><circle cx="145" cy="70" r="60" fill="#fff" opacity=".85"/><path d="M0 220 Q220 175 430 220 T900 205 V300H0Z" fill="#65b96b"/><path d="M0 250 Q250 210 500 250 T900 235" fill="none" stroke="#777" stroke-width="45"/><g transform="translate(235 105)"><rect x="0" y="35" rx="28" width="430" height="105" fill="#f7f9fb" stroke="#155b91" stroke-width="7"/><path d="M65 35 L110 -5 H315 L365 35Z" fill="#dcefff" stroke="#155b91" stroke-width="7"/><path d="M125 5 H205 V34 H90Z M215 5 H305 L342 34 H215Z" fill="#7fc5ef" stroke="#155b91" stroke-width="5"/><circle cx="100" cy="143" r="32" fill="#263238"/><circle cx="335" cy="143" r="32" fill="#263238"/><circle cx="100" cy="143" r="14" fill="#dce3e8"/><circle cx="335" cy="143" r="14" fill="#dce3e8"/><rect x="145" y="70" width="140" height="42" rx="10" fill="#1976d2"/><text x="215" y="99" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="25" fill="white">DORENBOS</text></g><text x="450" y="45" text-anchor="middle" font-family="Arial" font-size="26" font-weight="bold" fill="#174c70">TAXI</text></svg></div><div class="title"><h1>Dorenbos Weekoverzicht</h1><p>Beoordeling per kind · maandag t/m vrijdag</p></div><div class="card"><table><thead><tr><th>Kind</th><th>Ma</th><th>Di</th><th>Wo</th><th>Do</th><th>Vr</th></tr></thead><tbody id="rows"></tbody></table><div class="legend"><span><i class="dot g"></i>Goed</span><span><i class="dot o"></i>Bijna goed</span><span><i class="dot r"></i>Niet goed</span><span>⚪ Nog niet ingevuld</span></div><button onclick="clearWeek()">Week wissen</button><div class="hint">Alleen de kleuren worden gewist. De namen blijven staan.</div></div></div>
+<script>const days=["ma","di","wo","do","vr"],names=["Abir","Thijs","Jill","Shay","Taha","Jayden","Miracle","Harley"],key="dorenbos_week_v1";let data={};try{data=JSON.parse(localStorage.getItem(key))||{}}catch(e){}function save(){localStorage.setItem(key,JSON.stringify(data))}function render(){const tb=document.getElementById("rows");tb.innerHTML="";names.forEach((name,i)=>{const tr=document.createElement("tr"),nt=document.createElement("td"),input=document.createElement("input");input.className="name c"+(i+1);input.value=name;input.readOnly=true;nt.appendChild(input);tr.appendChild(nt);days.forEach(day=>{const td=document.createElement("td"),cell=document.createElement("div");cell.className="cell "+(data[i+"_"+day]||"");cell.onclick=()=>{const c=data[i+"_"+day]||"";data[i+"_"+day]=c===""?"green":c==="green"?"orange":c==="orange"?"red":"";save();cell.className="cell "+data[i+"_"+day]};td.appendChild(cell);tr.appendChild(td)});tb.appendChild(tr)})}function clearWeek(){if(confirm("Alle kleuren van deze week wissen? De namen blijven staan.")){for(let i=0;i<8;i++)days.forEach(d=>delete data[i+"_"+d]);save();render()}}render();if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=2");</script></body></html>
