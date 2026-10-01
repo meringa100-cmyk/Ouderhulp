@@ -19,7 +19,8 @@ const key="dorenbos_week_v1",historyKey="dorenbos_history_v1",contactKey="dorenb
 let data={},history=[],contacts=[],notes={},lastSnapshot=null,pendingReason=null,currentWeekKey="";
 try{data=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){data={}}
 try{history=JSON.parse(localStorage.getItem(historyKey)||"[]")}catch(e){history=[]}
-try{contacts=JSON.parse(localStorage.getItem(contactKey)||"[]")}catch(e){contacts=[]}\ntry{notes=JSON.parse(localStorage.getItem(notesKey)||"{}")}catch(e){notes={}}
+try{contacts=JSON.parse(localStorage.getItem(contactKey)||"[]")}catch(e){contacts=[]}
+try{notes=JSON.parse(localStorage.getItem(notesKey)||"{}")}catch(e){notes={}}
 
 function weekKey(){
   const d=new Date(),day=(d.getDay()+6)%7,mon=new Date(d);
