@@ -168,6 +168,7 @@ function render(){
 
 function showReason(name){
   const text=document.getElementById("reasonText"),box=document.getElementById("reasonOptions"),popup=document.getElementById("reasonPopup");
+  const parentPopup=document.getElementById("parentPopup"); if(parentPopup)parentPopup.classList.remove("show");
   if(!text||!box||!popup)return;
   text.innerHTML="<strong>"+esc(name)+"</strong> — wat was de reden voor deze rode melding?";
   box.innerHTML="";
@@ -207,7 +208,7 @@ function showParentContact(name){
 }
 
 function afterRed(p){
-  if(!p||redCount(p.i)!==2)return;
+  if(!p||redCount(p.i)<2)return;
   showParentContact(p.name);
 }
 
