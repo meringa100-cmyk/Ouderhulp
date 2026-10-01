@@ -196,12 +196,19 @@ function skipReason(){
   afterRed(p);
 }
 
+function showParentContact(name){
+  if(!name)return;
+  window.currentChild=name;
+  const popup=document.getElementById("parentPopup");
+  const text=document.getElementById("popupText");
+  if(text)text.innerHTML="<strong>"+esc(name)+" heeft deze week 2 keer rood gekregen.</strong><br><br>Wilt u nu de ouders van <strong>"+esc(name)+"</strong> bellen of appen?";
+  setContactLinks(name);
+  if(popup)popup.classList.add("show");
+}
+
 function afterRed(p){
   if(!p||redCount(p.i)!==2)return;
-  window.currentChild=p.name;
-  document.getElementById("popupText").innerHTML="<strong>"+esc(p.name)+" heeft deze week 2 keer rood gekregen.</strong><br><br>Wilt u nu de ouders van <strong>"+esc(p.name)+"</strong> bellen of appen?";
-  setContactLinks(p.name);
-  document.getElementById("parentPopup").classList.add("show");
+  showParentContact(p.name);
 }
 
 function closePopup(){document.getElementById("parentPopup").classList.remove("show")}
