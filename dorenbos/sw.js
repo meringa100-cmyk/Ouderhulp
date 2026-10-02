@@ -1,4 +1,4 @@
-const CACHE="dorenbos-v31";
+const CACHE="dorenbos-v32";
 
 self.addEventListener("install", event => {
   event.waitUntil(self.skipWaiting());
