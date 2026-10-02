@@ -241,10 +241,8 @@ function undoLast(){
   data=JSON.parse(lastSnapshot);lastSnapshot=null;save();render();updateReport();
 }
 
-function downloadWeek(){
-  const blob=new Blob([JSON.stringify({week:new Date().toISOString().slice(0,10),data:data},null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="dorenbos-week.json";a.click();URL.revokeObjectURL(a.href);
-}
+function statusLabel(v){return v==="green"?"🟢 Goed":v==="orange"?"🟠 Bijna goed":v==="red"?"🔴 Niet goed":v==="absent"?"🟣 Afwezig":"⚪ Nog niet ingevuld"}
+function downloadWeek(){const d=new Date(),day=(d.getDay()+6)%7,mon=new Date(d),fri=new Date(d);mon.setDate(d.getDate()-day);fri.setDate(mon.getDate()+4);const week=Math.ceil((((mon-new Date(mon.getFullYear(),0,1))/86400000)+new Date(mon.getFullYear(),0,1).getDay()+1)/7),fmt=x=>x.toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"});let txt="DORENBOS WEEKOVERZICHT\\nWeek "+week+"\\n"+fmt(mon)+" t/m "+fmt(fri)+"\\n\\n",csv="Kind,Ma,Di,Wo,Do,Vr,Groen,Oranje,Rood,Paars,Niet ingevuld\\n",tg=0,to=0,tr=0,ta=0,te=0;names.forEach((name,i)=>{let cg=0,co=0,cr=0,ca=0,ce=0;txt+=name+"\\n";days.forEach(day=>{const v=data[i+"_"+day]||"";if(v==="green")cg++;else if(v==="orange")co++;else if(v==="red")cr++;else if(v==="absent")ca++;else ce++;txt+="  "+day.toUpperCase()+": "+statusLabel(v)+"\\n"});tg+=cg;to+=co;tr+=cr;ta+=ca;te+=ce;csv+="\""+name+"\",\""+days.map(d=>statusLabel(data[i+"_"+d]||"")).join("\",\"")+"\","+cg+","+co+","+cr+","+ca+","+ce+"\\n";txt+="  Telling: 🟢 "+cg+" · 🟠 "+co+" · 🔴 "+cr+" · 🟣 "+ca+" · ⚪ "+ce+"\\n\\n"});txt+="WEEK TOTAAL\\n🟢 Goed: "+tg+"\\n🟠 Bijna goed: "+to+"\\n🔴 Niet goed: "+tr+"\\n🟣 Afwezig: "+ta+"\\n⚪ Nog niet ingevuld: "+te+"\\n";const save=(content,name,type)=>{const blob=new Blob([content],{type:type}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};save(txt,"Dorenbos_Week"+week+"_"+d.getFullYear()+".txt","text/plain;charset=utf-8");setTimeout(()=>save(csv,"Dorenbos_Week"+week+"_"+d.getFullYear()+".csv","text/csv;charset=utf-8"),300)}
 
 function clearWeek(){
   if(!confirm("Alle kleuren van deze week wissen? De namen blijven staan."))return;
