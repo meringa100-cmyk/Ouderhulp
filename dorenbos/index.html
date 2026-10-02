@@ -262,7 +262,7 @@ async function downloadWord(){
     days.forEach(day=>{
       const v=data[i+"_"+day]||"";
       if(v==="green")cg++;else if(v==="orange")co++;else if(v==="red")cr++;else if(v==="absent")ca++;else ce++;
-      cells.push(new TableCell({children:[new Paragraph(statusLabel(v))]}));
+      const reason=data[i+"_"+day+"_reason"]||"";\n      cells.push(new TableCell({children:[new Paragraph(statusLabel(v)+(reason?" — Reden: "+reason:""))]}));
     });
     tg+=cg;to+=co;tr+=cr;ta+=ca;te+=ce;
     rows.push(new TableRow({children:cells}));
