@@ -151,7 +151,7 @@ function render(){
       cell.onclick=function(){
         const c=data[i+"_"+day]||"";
         lastSnapshot=JSON.stringify(data);
-        data[i+"_"+day]=c===""?"green":c==="green"?"orange":c==="orange"?"red":c==="red"?"absent":"";
+        data[i+"_"+day]=c===""?"green":c==="green"?"orange":c==="orange"?"absent":c==="absent"?"red":"";
         save();
         cell.className="cell "+data[i+"_"+day];
         updateReport();
