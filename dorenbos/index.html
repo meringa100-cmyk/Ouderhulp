@@ -433,8 +433,9 @@ function completeDailyEnd(){
  updateDailyCheckStatus();
 }
 function updateDailyCheckStatus(){
- const date=localDateKey(),entry=dailyChecks[date]||{},el=document.getElementById("dailyCheckHistory");
+ const date=localDateKey(),entry=dailyChecks[date]||{},el=document.getElementById("dailyCheckHistory"),button=document.getElementById("dailyCheckOpen");
  if(el)el.textContent=entry.startAt?"Vandaag gestart door "+(entry.driver||"chauffeur")+(entry.endAt?" · eindcontrole afgerond":" · eindcontrole nog open"):"Dagstart nog niet geregistreerd.";
+ if(button){button.textContent=entry.startAt&&!entry.endAt?"🏁 Eindcontrole afronden":"🚐 Dagelijkse chauffeurscheck";button.onclick=function(){openDailyCheck(!!(entry.startAt&&!entry.endAt))}}
 }
 document.getElementById("dailyDriver").addEventListener("input",updateDailyCheckButtons);
 buildDailyItems("dailyStartItems",dailyStartItems,"startCheck");
